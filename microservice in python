@@ -1,0 +1,72 @@
+# Questions:
+
+
+
+#  Write a microservice in python that takes a URL 
+of a static website asan input and identifies all
+the unique wordsand how many times they occur on a 
+web page. The output is a list of words in JSON format
+along with the frequency of occurrence (number of times the word is repeated).
+
+
+
+
+
+
+
+# Code Here
+
+
+
+
+
+
+# Code for the microservice: 
+
+
+
+
+
+import requests
+from bs4 import BeautifulSoup
+import nltk
+from nltk.corpus import stopwords
+import json
+
+def get_word_frequency(url):
+    # Make a GET request to the URL
+    response = requests.get(url)
+    # Use BeautifulSoup to parse the HTML content
+    soup = BeautifulSoup(response.content, 'html.parser')
+    # Extract all text content from the website
+    text = soup.get_text()
+    # Tokenize the text into words
+    words = nltk.word_tokenize(text)
+    # Remove stop words from the list of words
+    words = [word for word in words if word.lower() not in stopwords.words('english')]
+    # Count the frequency of each unique word using a dictionary
+    frequency = {}
+    for word in words:
+        if word in frequency:
+            frequency[word] += 1
+        else:
+            frequency[word] = 1
+    # Convert the dictionary into JSON format
+    json_output = json.dumps(frequency)
+    return json_output
+
+
+
+
+
+
+
+
+# To test the microservice, you can call the get_word_frequency function with a URL as the input:
+
+
+
+
+url = 'https://www.example.com'
+output = get_word_frequency(url)
+print(output)
